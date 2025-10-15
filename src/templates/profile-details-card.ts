@@ -48,20 +48,29 @@ export function createDetailCard(
         .style('fill', theme.text)
         .style('font-size', `${labelHeight}px`);
 
-    // process chart data
-    const lineChartData: {contributionCount: number; date: Date}[] = [];
+    // process chart data - switch from monthly to per-date (last 14 days)
+    // Build per-day counts for the last N days (inclusive)
+    const DAYS = 14;
+    const endDate = moment().startOf('day').toDate();
+    const startDate = moment(endDate).subtract(DAYS - 1, 'days').toDate();
+
+    // Aggregate contributionsData by date string (YYYY-MM-DD) and limit to range
+    const dateCountMap = new Map<string, number>();
     for (const data of contributionsData) {
-        const formatDate = moment(data.date).format('YYYY-MM');
-        data.date = new Date(formatDate);
-        const lastIndex = lineChartData.length - 1;
-        if (lineChartData.length == 0 || lineChartData[lastIndex].date.getTime() !== data.date.getTime()) {
-            lineChartData.push({
-                contributionCount: data.contributionCount,
-                date: data.date
-            }); // use new object
-        } else {
-            lineChartData[lastIndex].contributionCount += data.contributionCount;
-        }
+        const dateStr = moment(data.date).format('YYYY-MM-DD');
+        const dateObj = moment(dateStr, 'YYYY-MM-DD').toDate();
+        if (dateObj < startDate || dateObj > endDate) continue;
+        dateCountMap.set(dateStr, (dateCountMap.get(dateStr) || 0) + data.contributionCount);
+    }
+
+    // Ensure we have an entry for every day in range (fills zeroes)
+    const lineChartData: {contributionCount: number; date: Date}[] = [];
+    for (let m = moment(startDate); m.isSameOrBefore(endDate); m.add(1, 'days')) {
+        const dStr = m.format('YYYY-MM-DD');
+        lineChartData.push({
+            contributionCount: dateCountMap.get(dStr) || 0,
+            date: m.toDate()
+        });
     }
 
     // prepare chart data
@@ -70,11 +79,8 @@ export function createDetailCard(
     const chartHeight = card.height - 2 * card.yPadding - 10;
     const x = d3.scaleTime().range([0, chartWidth]);
 
-    x.domain(
-        <[Date, Date]>d3.extent(lineChartData, function (d) {
-            return d.date;
-        })
-    );
+    // Domain set explicitly to start/end of the last N days
+    x.domain([startDate, endDate]);
 
     // eslint-disable-next-line prefer-spread
     const yMax = Math.max.apply(
@@ -117,15 +123,10 @@ export function createDetailCard(
     // Add the X Axis
     const xAxis = d3
         .axisBottom<Date>(x)
-        .tickFormat(d3.timeFormat('%y/%m'))
+        .tickFormat(d3.timeFormat('%m-%d'))
         .tickValues(
-            lineChartData
-                .filter((_, i) => {
-                    return i % 2 === 0;
-                })
-                .map(d => {
-                    return d.date;
-                })
+            // show a tick every 2 days to avoid clutter
+            lineChartData.map(d => d.date).filter((_, i) => i % 2 === 0)
         );
 
     chartPanel
@@ -145,7 +146,7 @@ export function createDetailCard(
     chartPanel
         .append('g')
         .append('text')
-        .text('contributions in the last year')
+        .text(`contributions in the last ${DAYS} days`)
         .attr('y', title.length > 30 ? 140 : -15) // if the title is too long, then put text to the bottom
         .attr('x', 230)
         .style('fill', theme.text)

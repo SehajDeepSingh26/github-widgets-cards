@@ -9,7 +9,7 @@ import {writeSVG} from '../utils/file-writer';
 export const createStatsCard = async function (username: string) {
     const statsData = await getStatsData(username);
     for (const themeName of ThemeMap.keys()) {
-        const svgString = getStatsSVG(statsData, themeName);
+        const svgString = await getStatsSVG(username, statsData, themeName);
         // output to folder, use 3- prefix for sort in preview
         writeSVG(themeName, '3-stats', svgString);
     }
@@ -18,14 +18,16 @@ export const createStatsCard = async function (username: string) {
 export const getStatsSVGWithThemeName = async function (username: string, themeName: string) {
     if (!ThemeMap.has(themeName)) throw new Error('Theme does not exist');
     const statsData = await getStatsData(username);
-    return getStatsSVG(statsData, themeName);
+    return getStatsSVG(username, statsData, themeName);
 };
 
-const getStatsSVG = function (
+const getStatsSVG = async function (
+    username: string,
     StatsData: {index: number; icon: string; name: string; value: string}[],
     themeName: string
 ) {
-    const title = 'Stats';
+    const profileDetails = await getProfileDetails(username);
+    const title = `${profileDetails.name}'s Github Stats`;
     const svgString = statsCard(`${title}`, StatsData, ThemeMap.get(themeName)!);
     return svgString;
 };
