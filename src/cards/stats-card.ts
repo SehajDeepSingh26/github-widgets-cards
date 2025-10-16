@@ -42,7 +42,7 @@ const getStatsData = async function (
     const totalIssueContributions = profileDetails.totalIssueContributions;
 
     const totalRepositoryContributions = profileDetails.totalRepositoryContributions;
-    if (process.env.VERCEL) {
+    if (process.env.VERCEL_I) {
         // If running on vercel, we only calculate for last 1 year to avoid Vercel timeout limit
         profileDetails.contributionYears = profileDetails.contributionYears.slice(0, 1);
         for (const year of profileDetails.contributionYears) {
@@ -64,7 +64,7 @@ const getStatsData = async function (
             value: `${abbreviateNumber(totalStars, 1)}`
         },
         // If running on vercel, we only display for last 1 year commits count
-        !process.env.VERCEL
+        !process.env.VERCEL_I
             ? {
                   index: 1,
                   icon: Icon.COMMIT,
