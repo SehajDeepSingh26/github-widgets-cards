@@ -124,12 +124,12 @@ const action = async () => {
 
 const main = async (username: string, utcOffset: number, exclude: Array<string>) => {
     try {
-        // await createProfileDetailsCard(username);
-        // await createReposPerLanguageCard(username, exclude);
-        // await createCommitsPerLanguageCard(username, exclude);
-        // await createStatsCard(username);
-        // await createProductiveTimeCard(username, utcOffset);
         await createStreakCardForUser(username)
+        await createProfileDetailsCard(username);
+        await createReposPerLanguageCard(username, exclude);
+        await createCommitsPerLanguageCard(username, exclude);
+        await createStatsCard(username);
+        await createProductiveTimeCard(username, utcOffset);
         generatePreviewMarkdown(false);
     } catch (error: any) {
         console.error(error);

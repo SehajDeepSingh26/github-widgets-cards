@@ -39,9 +39,9 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("x", 0)
     .attr("y", 0)
     .attr("text-anchor", "middle")
-    .style("font-size", "38px")
+    .style("font-size", "34px")
     .style("font-weight", "800")
-    .style("fill", theme.text)
+    .style("fill", theme.title)
 
   leftPanel
     .append("text")
@@ -51,7 +51,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
     .style("font-weight", "500")
-    .style("fill", theme.text)
+    .style("fill", theme.title)
 
   const joinedDateStr = moment(streakData.joinedDate).format("MMM DD, YYYY")
   leftPanel
@@ -62,7 +62,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("fill", theme.text)
-    .attr("opacity", 0.6)
+    .attr("opacity", 1)
 
   // vertical separators (between panels) - positioned using panel widths
   const leftSepX = Math.round(padding + panelWidth)
@@ -76,7 +76,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("y2", 136)
     .attr("stroke", theme.text)
     .attr("stroke-width", 1)
-    .attr("opacity", 0.12)
+    .attr("opacity", 1)
 
   svg
     .append("line")
@@ -86,7 +86,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("y2", 136)
     .attr("stroke", theme.text)
     .attr("stroke-width", 1)
-    .attr("opacity", 0.12)
+    .attr("opacity", 1)
 
   // Center section - Current Streak with circular progress (fully centered)
   const centerPanel = svg.append("g").attr("transform", `translate(${centerCenterX}, ${centerGroupY})`)
@@ -116,7 +116,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("cy", circleY)
     .attr("r", circleRadius)
     .attr("fill", "none")
-    .attr("stroke", "#FFA500")
+    .attr("stroke", theme.title)
     .attr("stroke-width", 4)
     .attr("stroke-dasharray", circumference)
     .attr("stroke-dashoffset", strokeDashoffset)
@@ -133,6 +133,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle")
     .style("font-size", "22px")
+    .style("stroke", theme.title)
     .style("pointer-events", "none")
 
   // Current streak number (centered)
@@ -140,10 +141,10 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .append("text")
     .text(streakData.currentStreak.toString())
     .attr("x", 0)
-    .attr("y", 6)
+    .attr("y", 5.5)
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle")
-    .style("font-size", "34px")
+    .style("font-size", "32px")
     .style("font-weight", "800")
     .style("fill", theme.text)
 
@@ -169,7 +170,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("fill", theme.text)
-    .attr("opacity", 0.65)
+    .attr("opacity", 1)
 
   // Right section - Max Streak (centered)
   const rightPanel = svg.append("g").attr("transform", `translate(${rightCenterX}, ${rightTopY})`)
@@ -180,9 +181,9 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("x", 0)
     .attr("y", 0)
     .attr("text-anchor", "middle")
-    .style("font-size", "38px")
+    .style("font-size", "34px")
     .style("font-weight", "800")
-    .style("fill", theme.text)
+    .style("fill", theme.title)
 
   rightPanel
     .append("text")
@@ -192,7 +193,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
     .style("font-weight", "500")
-    .style("fill", theme.text)
+    .style("fill", theme.title)
 
   const maxStreakStart = moment(streakData.maxStreakStart).format("MMM DD, YYYY")
   const maxStreakEnd = moment(streakData.maxStreakEnd).format("MMM DD, YYYY")
@@ -204,7 +205,7 @@ export function createStreakCard(title: string, streakData: StreakData, theme: T
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("fill", theme.text)
-    .attr("opacity", 0.6)
+    .attr("opacity", 1)
 
   return card.toString()
 }
