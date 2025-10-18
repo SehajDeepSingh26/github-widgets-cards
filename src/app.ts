@@ -7,6 +7,7 @@ import {createProductiveTimeCard} from './cards/productive-time-card';
 import {spawn} from 'child_process';
 import {translateLanguage} from './utils/translator';
 import {OUTPUT_PATH, generatePreviewMarkdown} from './utils/file-writer';
+import { createStreakCardForUser } from './cards/streak-cards';
 
 const execCmd = (cmd: string, args: string[] = []) =>
     new Promise((resolve, reject) => {
@@ -128,6 +129,7 @@ const main = async (username: string, utcOffset: number, exclude: Array<string>)
         await createCommitsPerLanguageCard(username, exclude);
         await createStatsCard(username);
         await createProductiveTimeCard(username, utcOffset);
+        await createStreakCardForUser(username)
         generatePreviewMarkdown(false);
     } catch (error: any) {
         console.error(error);

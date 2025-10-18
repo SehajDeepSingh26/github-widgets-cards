@@ -160,6 +160,20 @@
                                 </v-btn>
                             </v-col>
                         </v-row>
+                        <!-- Added Streak Stats Card -->
+                        <v-row justify="center" no-gutters>
+                            <v-col cols="10">
+                                <v-card outlined>
+                                    <v-img :src="streakStatsSource"></v-img>
+                                    <v-card-text class="text--primary">
+                                        <div>Markdown Usage</div>
+                                        <code>
+                                            ![]({{ streakStatsSource }})
+                                        </code>
+                                    </v-card-text>
+                                </v-card>
+                            </v-col>
+                        </v-row>
                         <v-row justify="center" no-gutters>
                             <v-col cols="10">
                                 <v-card outlined>
@@ -240,6 +254,7 @@
                     themes: ['default'],
                     username: 'vn7n24fzkq',
                     theme: 'default',
+                    streakStatsSource: '',
                     profileDetailSource: '',
                     repoLanguageSource: '',
                     commitLanguageSource: '',
@@ -265,6 +280,7 @@
                         this.theme = theme;
                     },
                     updateAllCards: function () {
+                        this.streakStatsSource = `${this.baseURL}/api/cards/streak-stats?username=${this.username}&theme=${this.theme}`;
                         this.profileDetailSource = `${this.baseURL}/api/cards/profile-details?username=${this.username}&theme=${this.theme}`;
                         this.repoLanguageSource = `${this.baseURL}/api/cards/repos-per-language?username=${this.username}&theme=${this.theme}`;
                         this.commitLanguageSource = `${this.baseURL}/api/cards/most-commit-language?username=${this.username}&theme=${this.theme}`;
